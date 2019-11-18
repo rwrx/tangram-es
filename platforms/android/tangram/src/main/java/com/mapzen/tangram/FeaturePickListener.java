@@ -1,11 +1,12 @@
 package com.mapzen.tangram;
 
 import android.support.annotation.Keep;
+import android.support.annotation.Nullable;
 
 import java.util.Map;
 
 /**
- * Interface for a callback to receive information about features picked from the map
+ * Callback to receive information about features picked from the map
  * Triggered after a call of {@link MapController#pickFeature(float, float)}
  * Listener should be set with {@link MapController#setFeaturePickListener(FeaturePickListener)}
  * The callback will be run on the main (UI) thread.
@@ -13,10 +14,8 @@ import java.util.Map;
 @Keep
 public interface FeaturePickListener {
     /**
-     * Receive information about features found in a call to {@link MapController#pickFeature(float, float)}
-     * @param properties A mapping of string keys to string or number values
-     * @param positionX The horizontal screen coordinate of the picked location
-     * @param positionY The vertical screen coordinate of the picked location
+     * Called when a feature pick query is complete, whether or not a feature was found.
+     * @param result Info about the selected feature, or null if no feature was found.
      */
-    void onFeaturePick(final Map<String, String> properties, final float positionX, final float positionY);
+    void onFeaturePickComplete(@Nullable final FeaturePickResult result);
 }

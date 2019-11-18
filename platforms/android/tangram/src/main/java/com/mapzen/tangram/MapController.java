@@ -898,11 +898,11 @@ public class MapController {
     public void setLabelPickListener(@Nullable final LabelPickListener listener) {
         labelPickListener = (listener == null) ? null : new LabelPickListener() {
             @Override
-            public void onLabelPick(final LabelPickResult labelPickResult, final float positionX, final float positionY) {
+            public void onLabelPickComplete(final LabelPickResult labelPickResult) {
                 uiThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onLabelPick(labelPickResult, positionX, positionY);
+                        listener.onLabelPickComplete(labelPickResult);
                     }
                 });
             }
@@ -916,11 +916,11 @@ public class MapController {
     public void setMarkerPickListener(@Nullable final MarkerPickListener listener) {
         markerPickListener = (listener == null) ? null : new MarkerPickListener() {
             @Override
-            public void onMarkerPick(final MarkerPickResult markerPickResult, final float positionX, final float positionY) {
+            public void onMarkerPickComplete(final MarkerPickResult markerPickResult) {
                 uiThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onMarkerPick(markerPickResult, positionX, positionY);
+                        listener.onMarkerPickComplete(markerPickResult);
                     }
                 });
             }
@@ -1300,7 +1300,11 @@ public class MapController {
             uiThreadHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onFeaturePick(properties, x, y);
+                    FeaturePickResult result = null;
+                    if (properties != null) {
+                        result = new FeaturePickResult(properties, x, y);
+                    }
+                    listener.onFeaturePickComplete(result);
                 }
             });
         }
@@ -1315,9 +1319,9 @@ public class MapController {
                 public void run() {
                     LabelPickResult result = null;
                     if (properties != null) {
-                        result = new LabelPickResult(lng, lat, type, properties);
+                        result = new LabelPickResult(properties, lng, lat, x, y, type);
                     }
-                    listener.onLabelPick(result, x, y);
+                    listener.onLabelPickComplete(result);
                 }
             });
         }
@@ -1333,9 +1337,9 @@ public class MapController {
                     final Marker marker = markers.get(markerId);
                     MarkerPickResult result = null;
                     if (marker != null) {
-                        result = new MarkerPickResult(marker, lng, lat);
+                        result = new MarkerPickResult(marker, lng, lat, x, y);
                     }
-                    listener.onMarkerPick(result, x, y);
+                    listener.onMarkerPickComplete(result);
                 }
             });
         }
